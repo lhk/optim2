@@ -2,10 +2,9 @@ import numpy as np
 import unittest
 
 from LinearNode import LinearNode
-from TanhNode import TanhNode
 from SigmoidNode import SigmoidNode
 
-class LinearTanhSigmoid(unittest.TestCase):
+class LinearSigmoid(unittest.TestCase):
 
 
     def setUp(self):
@@ -21,21 +20,21 @@ class LinearTanhSigmoid(unittest.TestCase):
         self.x = np.random.rand(3, 1)
 
         self.lin1 = LinearNode(W1, b1)
-        self.tan1 = TanhNode()
+        self.sigm1 = SigmoidNode()
         self.lin2 = LinearNode(W2, b2)
-        self.sigm = SigmoidNode()
+        self.sigm2 = SigmoidNode()
 
     def forward(self, x):
         z = self.lin1.forward(x)
-        a = self.tan1.forward(z)
+        a = self.sigm1.forward(z)
         z = self.lin2.forward(a)
-        a = self.sigm.forward(z)
+        a = self.sigm2.forward(z)
         return a
 
     def backward(self, dy, ddy):
-        dz, ddz = self.sigm.backward(dy, ddy)
+        dz, ddz = self.sigm2.backward(dy, ddy)
         da, dda = self.lin2.backward(dz, ddz)
-        dz, ddz = self.tan1.backward(da, dda)
+        dz, ddz = self.sigm1.backward(da, dda)
         dx, ddx = self.lin1.backward(dz, ddz)
 
         return dx, ddx
