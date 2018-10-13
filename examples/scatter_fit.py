@@ -2,7 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from examples import patterns
 
-x, y, labels = patterns.sides(2000)
+np.random.seed(0)
+
+num_samples = 2000
+x, y, labels = patterns.sides(num_samples)
 
 plt.scatter(x[:,0], y[:,0], c=labels)
 plt.show()
@@ -45,7 +48,7 @@ def backward(dy, ddy):
     return dy, ddy
 
 def sample(batch_size):
-    indices = np.random.choice(200, batch_size)
+    indices = np.random.choice(num_samples, batch_size)
 
     batch_x = x[indices]
     batch_y = y[indices]
@@ -87,7 +90,7 @@ for i in range(100000):
     backward(dy, ddy)
 
     # update params
-    update_firstorder()
+    update_secondorder()
 
     mean_loss += loss
     if i%1000==0 and i!=0:
