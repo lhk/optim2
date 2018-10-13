@@ -1,30 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from examples import patterns
 
-# set up the data
-# circle one
-num_samples=100
-phi = np.linspace(0, np.pi * 5, num_samples)
-r = np.linspace(0, 10, num_samples)
-
-x1 = np.cos(phi)*r
-y1 = np.sin(phi)*r
-
-labels1 = np.zeros((num_samples,))
-
-# circle two
-num_samples=100
-phi = np.linspace(0 + np.pi/2, np.pi * 5 + np.pi/1.3, num_samples)
-r = np.linspace(0, 10, num_samples)
-
-x2 = np.cos(phi)*r
-y2 = np.sin(phi)*r
-
-labels2 = np.ones((num_samples,))
-
-x = np.concatenate([x1, x2]).reshape((-1, 1))
-y = np.concatenate([y1, y2]).reshape((-1, 1))
-labels = np.concatenate([labels1, labels2])
+x, y, labels = patterns.circles()
 
 #plt.scatter(x, y, c=labels)
 #plt.show()
@@ -36,7 +14,7 @@ from SigmoidNode import SigmoidNode
 
 np.random.seed(0)
 
-shapes = [10, 100, 1]
+shapes = [10, 100, 100, 1]
 input_size = 2
 nodes = []
 for shape in shapes:
@@ -83,7 +61,7 @@ def update_firstorder(alpha=1e-3):
             # something like a relaxed newton step
             node.params[param_id][:] = node.params[param_id] - alpha*node.d[param_id]
 
-def update_secondorder(alpha=1e-5):
+def update_secondorder(alpha=1e-6):
     for node in nodes:
         for param_id in node.param_ids:
             # something like a relaxed newton step
@@ -92,7 +70,7 @@ def update_secondorder(alpha=1e-5):
 
 # start the training process
 batch_size = 16
-for i in range(10000):
+for i in range(100000):
     # get a training sample
     batch, targets = sample(batch_size=batch_size)
 
@@ -110,6 +88,6 @@ for i in range(10000):
     # update params
     update_firstorder()
 
-    if i%10==0:
+    if i%1000==0:
         print(loss)
 
