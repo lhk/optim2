@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from examples import patterns
 
-x, y, labels = patterns.sides()
+x, y, labels = patterns.sides(2000)
 
 plt.scatter(x[:,0], y[:,0], c=labels)
 plt.show()
@@ -61,7 +61,7 @@ def update_firstorder(alpha=1e-3):
             # something like a relaxed newton step
             node.params[param_id][:] = node.params[param_id] - alpha*node.d[param_id]
 
-def update_secondorder(alpha=1e-6):
+def update_secondorder(alpha=1e-4):
     for node in nodes:
         for param_id in node.param_ids:
             # something like a relaxed newton step
@@ -69,7 +69,8 @@ def update_secondorder(alpha=1e-6):
 
 
 # start the training process
-batch_size = 16
+batch_size = 64
+mean_loss = 0
 for i in range(100000):
     # get a training sample
     batch, targets = sample(batch_size=batch_size)
@@ -88,6 +89,8 @@ for i in range(100000):
     # update params
     update_firstorder()
 
-    if i%1000==0:
-        print(loss)
+    mean_loss += loss
+    if i%1000==0 and i!=0:
+        print(mean_loss/1000)
+        mean_loss=0
 
