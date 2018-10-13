@@ -5,16 +5,24 @@ from TanhNode import TanhNode
 
 np.random.seed(0)
 
-W = np.random.rand(1,3)
-b = np.random.rand(1)
+W1 = np.random.rand(4, 3)
+b1 = np.random.rand(4, 1)
+W2 = np.random.rand(1, 4)
+b2 = np.random.rand(1, 1)
 x = np.random.rand(3, 1)
 
-lin = LinearNode(W, b)
-tan = TanhNode()
+lin1 = LinearNode(W1, b1)
+tan1 = TanhNode()
+lin2 = LinearNode(W2, b2)
+tan2 = TanhNode()
 
 print("foward pass")
-z = lin.forward(x)
-a = tan.forward(z)
+def forward(x):
+    z = lin1.forward(x)
+    a = tan1.forward(z)
+    z = lin2.forward(a)
+    a = tan2.forward(z)
+    return a
 
 print("backward pass")
 
@@ -28,13 +36,19 @@ mask[idx] = 1
 x_plus = x+mask*eps
 x_minus = x-mask*eps
 
-a=tan.forward(lin.forward(x))
+a=forward(x)
 da, dda = 2*a, 2
-dz, ddz = tan.backward(da, dda)
-dx, ddx = lin.backward(dz, ddz)
+def backward(dy, ddy):
+    dz, ddz = tan2.backward(dy, ddy)
+    da, dda = lin2.backward(dz, ddz)
+    dz, ddz = tan1.backward(da, dda)
+    dx, ddx = lin1.backward(dz, ddz)
 
-a_plus = tan.forward(lin.forward(x_plus))
-a_minus = tan.forward(lin.forward(x_minus))
+    return dx, ddx
+dx, ddx = backward(da, dda)
+
+a_plus = forward(x_plus)
+a_minus = forward(x_minus)
 
 num_grad = (a_plus**2 - a_minus**2) / (2*eps)
 num_2grad = (a_plus**2 - 2*a**2 +a_minus**2) / (eps**2)
