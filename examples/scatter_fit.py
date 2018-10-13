@@ -2,10 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from examples import patterns
 
-x, y, labels = patterns.circles()
+x, y, labels = patterns.sides()
 
-#plt.scatter(x, y, c=labels)
-#plt.show()
+plt.scatter(x[:,0], y[:,0], c=labels)
+plt.show()
 
 # set up the network
 from LinearNode import LinearNode
@@ -14,7 +14,7 @@ from SigmoidNode import SigmoidNode
 
 np.random.seed(0)
 
-shapes = [10, 100, 100, 1]
+shapes = [10, 1]
 input_size = 2
 nodes = []
 for shape in shapes:

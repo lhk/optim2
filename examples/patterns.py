@@ -27,3 +27,19 @@ def circles():
     labels = np.concatenate([labels1, labels2])
 
     return x, y, labels
+
+def sides():
+    num_samples = 100
+    x1 =np.random.rand(num_samples)*0.7
+    x2 = np.random.rand(num_samples)*0.7 + 0.3
+    y1 = np.random.rand(num_samples)
+    y2 = np.random.rand(num_samples)
+
+    labels1 = np.zeros((num_samples,))
+    labels2 = np.ones((num_samples,))
+
+    x = np.concatenate([x1, x2]).reshape((-1, 1))
+    y = np.concatenate([y1, y2]).reshape((-1, 1))
+    labels = np.concatenate([labels1, labels2])
+
+    return x, y, labels
