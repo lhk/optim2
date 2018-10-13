@@ -1,6 +1,6 @@
 import numpy as np
 
-class LinearNode:
+class TanhNode:
     """
     this is just a template
     """
