@@ -29,15 +29,15 @@ x_plus = x+mask*eps
 x_minus = x-mask*eps
 
 a=tan.forward(lin.forward(x))
-da, dda = 1, 0
+da, dda = 2*a, 2
 dz, ddz = tan.backward(da, dda)
 dx, ddx = lin.backward(dz, ddz)
 
 a_plus = tan.forward(lin.forward(x_plus))
 a_minus = tan.forward(lin.forward(x_minus))
 
-num_grad = (a_plus - a_minus) / (2*eps)
-num_2grad = (a_plus - 2*a +a_minus) / (eps**2)
+num_grad = (a_plus**2 - a_minus**2) / (2*eps)
+num_2grad = (a_plus**2 - 2*a**2 +a_minus**2) / (eps**2)
 
 print("comparing gradients")
 print("analytical vs numerical (1st): {} - {}".format(dx[idx], num_grad))
