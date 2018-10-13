@@ -6,7 +6,7 @@ class SigmoidNode:
     """
     def __init__(self):
         #no params
-        pass
+        self.param_ids=[]
 
     def forward(self, x):
         """

@@ -22,12 +22,12 @@ y2 = np.sin(phi)*r
 
 labels2 = np.ones((num_samples,))
 
-x = np.concatenate([x1, x2])
-y = np.concatenate([y1, y2])
+x = np.concatenate([x1, x2]).reshape((-1, 1))
+y = np.concatenate([y1, y2]).reshape((-1, 1))
 labels = np.concatenate([labels1, labels2])
 
-plt.scatter(x, y, c=labels)
-plt.show()
+#plt.scatter(x, y, c=labels)
+#plt.show()
 
 # set up the network
 from LinearNode import LinearNode
@@ -40,14 +40,18 @@ shapes = [10, 100, 1]
 input_size = 2
 nodes = []
 for shape in shapes:
-    W = np.random.rand(shape, input_size)
-    b = np.random.rand(input_size, 1)
+    W = np.random.rand(shape, input_size) * 0.01
+    b = np.random.rand(shape, 1) * 0.01
     input_size = shape
 
     lin = LinearNode(W, b)
     tanh = TanhNode()
     nodes.append(lin)
     nodes.append(tanh)
+
+# remove last tanh
+# TODO: this is too hacky, do it nicely
+nodes.remove(nodes[-1])
 
 sigm = SigmoidNode()
 nodes.append(sigm)
@@ -67,13 +71,19 @@ def sample(batch_size):
 
     batch_x = x[indices]
     batch_y = y[indices]
-    batch = np.concatenate([batch_x, batch_y], axis=0)
+    batch = np.concatenate([batch_x, batch_y], axis=1).T
 
     targets = labels[indices]
 
     return batch, targets
 
-def update(alpha=1e-1):
+def update_firstorder(alpha=1e-3):
+    for node in nodes:
+        for param_id in node.param_ids:
+            # something like a relaxed newton step
+            node.params[param_id][:] = node.params[param_id] - alpha*node.d[param_id]
+
+def update_secondorder(alpha=1e-5):
     for node in nodes:
         for param_id in node.param_ids:
             # something like a relaxed newton step
@@ -82,7 +92,7 @@ def update(alpha=1e-1):
 
 # start the training process
 batch_size = 16
-while True:
+for i in range(10000):
     # get a training sample
     batch, targets = sample(batch_size=batch_size)
 
@@ -98,5 +108,8 @@ while True:
     backward(dy, ddy)
 
     # update params
-    update()
+    update_firstorder()
+
+    if i%10==0:
+        print(loss)
 
