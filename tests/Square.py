@@ -46,8 +46,10 @@ class SquareTest(unittest.TestCase):
             a_plus = self.forward(x_plus)
             a_minus = self.forward(x_minus)
 
-            num_grad = (a_plus ** 2 - a_minus ** 2) / (2 * self.eps)
-            num_2grad = (a_plus ** 2 - 2 * a ** 2 + a_minus ** 2) / (self.eps ** 2)
+            loss = lambda x: (x**2).sum()
+
+            num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
+            num_2grad = (loss(a_plus) - 2 * loss(a) + loss(a_minus)) / (self.eps ** 2)
 
             self.assertTrue(abs(num_grad - dx[idx])<self.tol)
             self.assertTrue(abs(num_2grad - ddx[idx]<np.sqrt(self.tol)))
