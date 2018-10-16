@@ -24,29 +24,52 @@ class LinearTanhTest(unittest.TestCase):
         self.lin2 = LinearNode(W2, b2)
         self.tan2 = TanhNode()
 
-    def forward(self, x):
-        z = self.lin1.forward(x)
-        a = self.tan1.forward(z)
-        z = self.lin2.forward(a)
-        a = self.tan2.forward(z)
+    def forward_pass1(self, x):
+        z = self.lin1.forward_pass1(x)
+        a = self.tan1.forward_pass1(z)
+        z = self.lin2.forward_pass1(a)
+        a = self.tan2.forward_pass1(z)
         return a
 
-    def backward(self, dy, ddy):
-        dz, ddz = self.tan2.backward(dy, ddy)
-        da, dda = self.lin2.backward(dz, ddz)
-        dz, ddz = self.tan1.backward(da, dda)
-        dx, ddx = self.lin1.backward(dz, ddz)
+    def backward_pass1(self, dy_dout):
+        dy_din = self.tan2.backward(dy_dout)
+        dy_dout = dy_din
+        dy_din = self.lin2.backward(dy_dout)
+        dy_dout = dy_din
+        dy_din = self.tan1.backward(dy_dout)
+        dy_dout = dy_din
+        dy_din = self.lin1.backward(dy_dout)
 
-        return dx, ddx
+        return dy_din
 
-    def test_forward_pass(self):
-        # just running forward once, to see if dimensions work
-        self.forward(self.x)
+    def forward_pass2(self, x):
+        dx_dx = np.ones_like(x)
+        dout_dx = self.lin1.forward_pass2(dx_dx)
+        din_dx = dout_dx
+        dout_dx = self.tan1.forward_pass2(din_dx)
+        din_dx = dout_dx
+        dout_dx = self.lin2.forward_pass2(din_dx)
+        din_dx = dout_dx
+        dout_dx = self.tan2.forward_pass2(din_dx)
 
-    def test_backward(self):
-        # just running backward once, to see if dimensions work
-        self.forward(self.x)
-        self.backward(1, 1)
+        return dout_dx
+
+    def backward_pass2(self, ddy_ddout):
+        ddy_ddin = self.tan2.backward(ddy_ddout)
+        ddy_ddout = ddy_ddin
+        dy_din = self.lin2.backward(ddy_ddout)
+        ddy_ddout = ddy_ddin
+        dy_din = self.tan1.backward(ddy_ddout)
+        ddy_ddout = ddy_ddin
+        ddy_ddin = self.lin1.backward(ddy_ddout)
+
+        return ddy_ddin
+
+    def test_passes(self):
+        y = self.forward_pass1(self.x)
+        dy_dx = self.backward_pass1(np.ones_like(y))
+        dy_dx2 = self.forward_pass2(self.x)
+        ddy_ddx = self.backward_pass2(self.zeros_like(y))
 
     def test_grad_x(self):
         for idx in range(self.x.shape[0]):
