@@ -17,57 +17,42 @@ class LinearNode:
         self.params["b"]=b
 
         # gradients
-        self.d={}
-        self.d["W"]=np.empty_like(W)
-        self.d["b"]=np.empty_like(b)
+        self.dy_d={}
+        self.dy_d["W"]=np.empty_like(W)
+        self.dy_d["b"]=np.empty_like(b)
 
         # second order gradients
-        self.dd={}
-        self.dd["W"]=np.empty_like(W)
-        self.dd["b"]=np.empty_like(b)
+        self.ddy_dd={}
+        self.ddy_dd["W"]=np.empty_like(W)
+        self.ddy_dd["b"]=np.empty_like(b)
 
-    def forward(self, x):
-        """
-        Computes the forward pass.
-        :param x:
-        :return:
-        """
-        self.x= x
-        return self.W@x + self.b
+    def forward_pass1(self, inp):
+        self.inp = inp
+        self.out = self.W@inp + self.b
+        return self.out
 
+    def forward_pass2(self, din_dx):
+        self.din_dx = din_dx
 
-    def backward(self, dy, ddy):
-        """
-        Computes the backward pass from inflowing gradients.
-        Creating the first derivatives is a simple backward pass.
-        Calculating the second derivs is harder:
-        We already receive a second derivative, this has to be multiplied by the square of our first derivs.
-        Add to this our second deriv times the incoming first.
+        self.dout_dx = din_dx*self.dout_din
+        return self.dout_dx
 
-        :param dy: first derivative
-        :param ddy: second derivative
-        :return:
-        """
+    def backward_pass1(self, dy_dout):
+        self.dy_dout = dy_dout
 
         # update the first derivatives of our params
-        self.d["W"][:] = np.dot(dy, self.x.T)
-        self.d["b"][:] = np.sum(dy, keepdims=True, axis=1)
+        self.dy_d["W"][:] = np.dot(dy_dout, self.inp.T)
+        self.dy_d["b"][:] = np.sum(dy_dout, keepdims=True, axis=1)
 
-        # update the second derivatives of our params
-        # the incoming second derivs need to be multiplied by our first, squared
-        # we don't need to add the square of our own derivative, this is a linear function so it's 0
-        self.dd["W"][:] = np.dot(ddy, self.x.T**2)
-        self.dd["b"][:] = np.sum(ddy, keepdims=True, axis=1)
+        self.dout_din = self.W.T
+        self.dy_din = self.dout_din @ dy_dout
 
-        # first derivative of output
-        dx = np.dot(self.W.T, dy)
+        return self.dy_din
 
-        # second derivative of output
-        # again, no contribution of our own second derivative (linear function)
-        ddx = np.dot(self.W.T**2, ddy)
+    def backward_pass2(self, ddy_ddout):
+        # this is a linear layer ddout_ddin = 0
+        self.ddy_ddin = (self.dout_din**2)@ddy_ddout
 
-        return dx, ddx
-
-
+        return self.ddy_ddin
 
 
