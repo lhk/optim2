@@ -1,45 +1,50 @@
 import numpy as np
 
 class TanhNode:
-    """
-    this is just a template
-    """
     def __init__(self):
         #no params
         self.param_ids=[]
 
-    def forward(self, x):
+    def forward(self, inp):
         """
-        Computes the forward pass.
-        :param x:
+        out = tanh(inp)
+        :param inp: inflowing input
         :return:
         """
-        self.x= x
-        return np.tanh(x)
+        self.inp= inp
+        self.out = np.tanh(inp)
+        return self.out
+
+    def forward_grad(self, din_dx, ddy):
+
+        self.din_dx = din_dx
+
+        # calculate derivative of output wrt x
+        self.dout_dx = din_dx * self.dout_din
+
+        # inflowing second times own first
+        dd_in = ddy * self.dout_din
+
+        # own second
+        ddout_ddin = -(2*np.sinh(self.x))/(np.cosh(self.x)**3)
+        dd_own = self.din_dx**2 * ddout_ddin
+
+        ddy = dd_in + dd_own
+
+        return self.dout_dx, ddy
 
 
-    def backward(self, dy, ddy):
+
+    def backward(self, dy_dout):
         """
-        Computes the backward pass from inflowing gradients.
-        Creating the first derivatives is a simple backward pass.
-        Calculating the second derivs is harder:
-        We already receive a second derivative, this has to be multiplied by the square of our first derivs.
-        Add to this our second deriv times the incoming first.
-
-        :param dy: first derivative
-        :param ddy: second derivative
+        dy_din = dy_dout * dout_din
+        :param dy_dout: inflowing first gradient
         :return:
         """
+        self.dout_din = 1 / (np.cosh(self.inp) ** 2)
+        self.dy_din = dy_dout * self.dout_din
 
-        # first derivative of output
-        dx = dy * 1/(np.cosh(self.x)**2)
-
-        # second derivative of output
-        dd_in = ddy * (1/(np.cosh(self.x)**2))**2
-        dd_own = dy * -(2*np.sinh(self.x))/(np.cosh(self.x)**3)
-        ddx = dd_in + dd_own
-
-        return dx, ddx
+        return self.dy_din
 
 
 
