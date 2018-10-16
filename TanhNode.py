@@ -5,47 +5,33 @@ class TanhNode:
         #no params
         self.param_ids=[]
 
-    def forward(self, inp):
-        """
-        out = tanh(inp)
-        :param inp: inflowing input
-        :return:
-        """
+    def forward_pass1(self, inp):
         self.inp= inp
         self.out = np.tanh(inp)
         return self.out
 
-    def forward_grad(self, din_dx, ddy):
+    def forward_pass2(self, din_dx):
 
         self.din_dx = din_dx
 
         # calculate derivative of output wrt x
         self.dout_dx = din_dx * self.dout_din
 
-        # inflowing second times own first
-        dd_in = ddy * self.dout_din
-
-        # own second
-        ddout_ddin = -(2*np.sinh(self.x))/(np.cosh(self.x)**3)
-        dd_own = self.din_dx**2 * ddout_ddin
-
-        ddy = dd_in + dd_own
-
-        return self.dout_dx, ddy
+        return self.dout_dx
 
 
-
-    def backward(self, dy_dout):
-        """
-        dy_din = dy_dout * dout_din
-        :param dy_dout: inflowing first gradient
-        :return:
-        """
+    def backward_pass1(self, dy_dout):
+        self.dy_dout = dy_dout
         self.dout_din = 1 / (np.cosh(self.inp) ** 2)
         self.dy_din = dy_dout * self.dout_din
 
         return self.dy_din
 
+    def backward_pass2(self, ddy_ddout):
+        self.ddout_ddin = -(2*np.sinh(self.x))/(np.cosh(self.x)**3)
 
+        self.ddy_ddin = ddy_ddout * (self.dout_din)**2 + self.dy_dout * self.ddout_ddin
+
+        return self.ddy_ddin
 
 

@@ -18,15 +18,15 @@ dout_dx in our layer is the same as din_dx in the next layer
 
 we eventually need all these to calculate the second derivatives
 to do this, I use the following functions:
-forward: inp -> out
-backward: dy_dout -> dy_din
-forward_grad: din_dx -> dout_dx
+forward_pass1: inp -> out
+backward_pass1: dy_dout -> dy_din
+forward_pass2: din_dx -> dout_dx
 
-in analogy to the definitions above, we also have
-ddy_ddx, ddy_ddout, ...
-the second derivative at our specific layer contributes like this:
-dy_dout * ddout_ddin * (din_dx)**2
+in analogy to the definitions above, we also have the second derivatives
+ddy_ddout, ddy_ddin, ddout_ddin, ddy_ddx, ...
 
-this is hard to write down properly
-we receive an inflowing second gradient
-this we multiply with our own first gradient and add our own second
+if we have ddy_ddout, we can calculate ddy_ddin like this:\
+ddy_ddin = ddy_ddout * (dout_din)**2 + dy_dout * ddout_ddin
+
+this is done in the last pass:
+backward_pass2: ddy_dout -> ddy_ddin
