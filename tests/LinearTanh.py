@@ -32,13 +32,13 @@ class LinearTanhTest(unittest.TestCase):
         return a
 
     def backward_pass1(self, dy_dout):
-        dy_din = self.tan2.backward(dy_dout)
+        dy_din = self.tan2.backward_pass1(dy_dout)
         dy_dout = dy_din
-        dy_din = self.lin2.backward(dy_dout)
+        dy_din = self.lin2.backward_pass1(dy_dout)
         dy_dout = dy_din
-        dy_din = self.tan1.backward(dy_dout)
+        dy_din = self.tan1.backward_pass1(dy_dout)
         dy_dout = dy_din
-        dy_din = self.lin1.backward(dy_dout)
+        dy_din = self.lin1.backward_pass1(dy_dout)
 
         return dy_din
 
@@ -55,21 +55,20 @@ class LinearTanhTest(unittest.TestCase):
         return dout_dx
 
     def backward_pass2(self, ddy_ddout):
-        ddy_ddin = self.tan2.backward(ddy_ddout)
+        ddy_ddin = self.tan2.backward_pass2(ddy_ddout)
         ddy_ddout = ddy_ddin
-        dy_din = self.lin2.backward(ddy_ddout)
+        ddy_ddin = self.lin2.backward_pass2(ddy_ddout)
         ddy_ddout = ddy_ddin
-        dy_din = self.tan1.backward(ddy_ddout)
+        ddy_ddin = self.tan1.backward_pass2(ddy_ddout)
         ddy_ddout = ddy_ddin
-        ddy_ddin = self.lin1.backward(ddy_ddout)
+        ddy_ddin = self.lin1.backward_pass2(ddy_ddout)
 
         return ddy_ddin
 
     def test_passes(self):
         y = self.forward_pass1(self.x)
         dy_dx = self.backward_pass1(np.ones_like(y))
-        dy_dx2 = self.forward_pass2(self.x)
-        ddy_ddx = self.backward_pass2(self.zeros_like(y))
+        ddy_ddx = self.backward_pass2(np.zeros_like(y))
 
     def test_grad_x(self):
         for idx in range(self.x.shape[0]):
