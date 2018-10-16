@@ -9,7 +9,7 @@ class LinearTanhTest(unittest.TestCase):
 
     def setUp(self):
         self.tol = 1e-6
-        self.eps = 1e-6
+        self.eps = 1e-5
         np.random.seed(0)
 
         W1 = np.random.rand(4, 3)
@@ -78,15 +78,17 @@ class LinearTanhTest(unittest.TestCase):
             x_plus = self.x + mask * self.eps
             x_minus = self.x - mask * self.eps
 
-            a = self.forward(self.x)
-            da, dda = 2 * a, 2
-            dx, ddx = self.backward(da, dda)
+            a = self.forward_pass1(self.x)
+            loss = lambda a: a
+            da, dda = 1, 0
+            dx= self.backward_pass1(da)
+            ddx = self.backward_pass2(dda)
 
-            a_plus = self.forward(x_plus)
-            a_minus = self.forward(x_minus)
+            a_plus = self.forward_pass1(x_plus)
+            a_minus = self.forward_pass1(x_minus)
 
-            num_grad = (a_plus ** 2 - a_minus ** 2) / (2 * self.eps)
-            num_2grad = (a_plus ** 2 - 2 * a ** 2 + a_minus ** 2) / (self.eps ** 2)
+            num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
+            num_2grad = (loss(a_plus) -2*loss(a) + loss(a_minus)) / (self.eps ** 2)
 
             self.assertTrue(abs(num_grad - dx[idx])<self.tol)
             self.assertTrue(abs(num_2grad - ddx[idx]<np.sqrt(self.tol)))
