@@ -57,14 +57,15 @@ class LinearSigmoid(unittest.TestCase):
             x_minus = self.x - mask * self.eps
 
             a = self.forward(self.x)
+            loss = lambda x: x**2
             da, dda = 2 * a, 2
             dx, ddx = self.backward(da, dda)
 
             a_plus = self.forward(x_plus)
             a_minus = self.forward(x_minus)
 
-            num_grad = (a_plus ** 2 - a_minus ** 2) / (2 * self.eps)
-            num_2grad = (a_plus ** 2 - 2 * a ** 2 + a_minus ** 2) / (self.eps ** 2)
+            num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
+            num_2grad = (loss(a_plus) - 2 * loss(a) + loss(a_minus)) / (self.eps ** 2)
 
             self.assertTrue(abs(num_grad - dx[idx])<self.tol)
             self.assertTrue(abs(num_2grad - ddx[idx]<np.sqrt(self.tol)))
@@ -82,6 +83,7 @@ class LinearSigmoid(unittest.TestCase):
 
                 self.lin1.W[:]=W1
                 a = self.forward(self.x)
+                loss = lambda x: x ** 2
                 da, dda = 2 * a, 2
                 dx, ddx = self.backward(da, dda)
 
@@ -94,8 +96,8 @@ class LinearSigmoid(unittest.TestCase):
                 self.lin1.W[:] = W1_minus
                 a_minus = self.forward(self.x)
 
-                num_grad = (a_plus ** 2 - a_minus ** 2) / (2 * self.eps)
-                num_2grad = (a_plus ** 2 - 2 * a ** 2 + a_minus ** 2) / (self.eps ** 2)
+                num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
+                num_2grad = (loss(a_plus) - 2 * loss(a) + loss(a_minus)) / (self.eps ** 2)
 
                 self.assertTrue(abs(num_grad - dW1[i,j])<self.tol)
                 self.assertTrue(abs(num_2grad - ddW1[i,j])<np.sqrt(self.tol))

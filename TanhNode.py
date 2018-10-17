@@ -28,7 +28,7 @@ class TanhNode:
         return self.dy_din
 
     def backward_pass2(self, ddy_ddout):
-        self.ddout_ddin = -(2*np.sinh(self.x))/(np.cosh(self.x)**3)
+        self.ddout_ddin = -(2*np.sinh(self.inp))/(np.cosh(self.inp)**3)
 
         self.ddy_ddin = ddy_ddout * (self.dout_din)**2 + self.dy_dout * self.ddout_ddin
 

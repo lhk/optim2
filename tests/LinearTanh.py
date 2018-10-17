@@ -79,8 +79,8 @@ class LinearTanhTest(unittest.TestCase):
             x_minus = self.x - mask * self.eps
 
             a = self.forward_pass1(self.x)
-            loss = lambda a: a
-            da, dda = 1, 0
+            loss = lambda a: a**2
+            da, dda = 2*a, 2
             dx= self.backward_pass1(da)
             ddx = self.backward_pass2(dda)
 

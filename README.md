@@ -22,6 +22,8 @@ forward_pass1: inp -> out
 backward_pass1: dy_dout -> dy_din
 forward_pass2: din_dx -> dout_dx
 
+TODO: the second forward pass seems unnecessary
+
 in analogy to the definitions above, we also have the second derivatives
 ddy_ddout, ddy_ddin, ddout_ddin, ddy_ddx, ...
 

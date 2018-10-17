@@ -4,37 +4,29 @@ import unittest
 from LinearNode import LinearNode
 from SquareNode import SquareNode
 
-class LinearSquareTest(unittest.TestCase):
+class LinearSquareSmallTest(unittest.TestCase):
 
 
     def setUp(self):
-        self.tol = 1e-6
+        self.tol = 1e-4
         self.eps = 1e-6
         np.random.seed(0)
 
-        W1 = np.random.rand(4, 3)
-        b1 = np.random.rand(4, 1)
-        W2 = np.random.rand(1, 4)
-        b2 = np.random.rand(1, 1)
+        W1 = np.random.rand(1, 3)
+        b1 = np.random.rand(1, 1)
 
         self.x = np.random.rand(3, 1)
 
         self.lin1 = LinearNode(W1, b1)
         self.sq1 = SquareNode()
-        self.lin2 = LinearNode(W2, b2)
-        self.sq2 = SquareNode()
 
     def forward(self, x):
         z = self.lin1.forward(x)
         a = self.sq1.forward(z)
-        z = self.lin2.forward(a)
-        a = self.sq2.forward(z)
         return a
 
     def backward(self, dy, ddy):
-        dz, ddz = self.sq2.backward(dy, ddy)
-        da, dda = self.lin2.backward(dz, ddz)
-        dz, ddz = self.sq1.backward(da, dda)
+        dz, ddz = self.sq1.backward(dy, ddy)
         dx, ddx = self.lin1.backward(dz, ddz)
 
         return dx, ddx
@@ -67,8 +59,8 @@ class LinearSquareTest(unittest.TestCase):
             num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
             num_2grad = (loss(a_plus) - 2 * loss(a) + loss(a_minus)) / (self.eps ** 2)
 
-            #self.assertTrue(abs(num_grad - dx[idx])<self.tol)
-            #self.assertTrue(abs(num_2grad - ddx[idx]<np.sqrt(self.tol)))
+            self.assertTrue(abs(num_grad - dx[idx])<self.tol)
+            self.assertTrue(abs(num_2grad - ddx[idx]<np.sqrt(self.tol)))
 
     def test_grad_W(self):
         W1 = np.copy(self.lin1.W)
