@@ -9,7 +9,7 @@ class LinearTanhTest(unittest.TestCase):
 
     def setUp(self):
         self.tol = 1e-6
-        self.eps = 1e-5
+        self.eps = 1e-3
         np.random.seed(0)
 
         W1 = np.random.rand(4, 3)
@@ -17,7 +17,7 @@ class LinearTanhTest(unittest.TestCase):
         W2 = np.random.rand(1, 4)
         b2 = np.random.rand(1, 1)
 
-        batch_size = 5
+        batch_size = 1
 
         # first dimension is batch
         self.x = np.random.rand(batch_size, 3, 1)
@@ -82,10 +82,10 @@ class LinearTanhTest(unittest.TestCase):
             num_2grad = (loss(a_plus) -2*loss(a) + loss(a_minus)) / (self.eps ** 2)
 
             diff_grad = abs(num_grad[0] - dx[0, 0, idx])
-            rel_errror_grad = diff_grad / (abs(num_grad[0]) + abs(dx[0, 0, idx])) * 2
+            rel_errror_grad = diff_grad / (abs(num_grad[0]) + abs(dx[0, 0, idx]))
 
             diff_2grad = abs(num_2grad[0] - ddx[0, idx, idx])
-            rel_errror_2grad = diff_2grad / (abs(num_2grad[0]) + abs(ddx[0,idx,idx])) * 2
+            rel_errror_2grad = diff_2grad / (abs(num_2grad[0]) + abs(ddx[0,idx,idx]))
 
             self.assertTrue(rel_errror_grad<self.tol)
             self.assertTrue(rel_errror_2grad<np.sqrt(self.tol))
@@ -103,11 +103,13 @@ class LinearTanhTest(unittest.TestCase):
 
                 self.lin1.W[:]=W1
                 a = self.forward(self.x)
-                da, dda = 2 * a, 2
-                dx, ddx = self.backward(da, dda)
+                loss = lambda a: a**2
+                da, dda = 2 * a, np.ones_like(a)*2
+                dx= self.backward_pass1(da)
+                ddx = self.backward_pass2(dda)
 
-                dW1 = np.copy(self.lin1.d["W"])
-                ddW1 = np.copy(self.lin1.dd["W"])
+                dW1 = np.copy(self.lin1.J_y["W"])
+                ddW1 = np.copy(self.lin1.H_y["W"])
 
                 self.lin1.W[:] = W1_plus
                 a_plus = self.forward(self.x)
@@ -115,8 +117,14 @@ class LinearTanhTest(unittest.TestCase):
                 self.lin1.W[:] = W1_minus
                 a_minus = self.forward(self.x)
 
-                num_grad = (a_plus ** 2 - a_minus ** 2) / (2 * self.eps)
-                num_2grad = (a_plus ** 2 - 2 * a ** 2 + a_minus ** 2) / (self.eps ** 2)
+                num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
+                num_2grad = (loss(a_plus) - 2 * loss(a) + loss(a_minus)) / (self.eps ** 2)
 
-                self.assertTrue(abs(num_grad - dW1[i,j])<self.tol)
-                self.assertTrue(abs(num_2grad - ddW1[i,j])<np.sqrt(self.tol))
+                diff_grad = abs(num_grad[0] - dW1[0, i, j])
+                rel_errror_grad = diff_grad / (abs(num_grad[0]) + abs(dx[0, i, j]))
+
+                diff_2grad = abs(num_2grad[0] - ddW1[0, i, j, i, j])
+                rel_errror_2grad = diff_2grad / (abs(num_2grad[0]) + abs(ddx[0, i, j, i, j]))
+
+                self.assertTrue(rel_errror_grad < self.tol)
+                self.assertTrue(rel_errror_2grad < np.sqrt(self.tol))

@@ -14,6 +14,15 @@ class LinearNode():
 
         self.J_y = {}
         self.J_a = {}
+
+        # W is stored as a matrix
+        # this leads to a complicated layout in the hessian:
+        # two indices in W select one specific parameter
+        # so four indices in the Hessian select the second derivative:
+        # the second derivative of y wrt to W_ij and W_hk is
+        # H_y[batch, i, j, h, k]
+        # alternatively, this matrix could be flattened
+        # then H_y would become 3 dimensional: batch and the two variable axes
         self.H_y = {}
 
     def forward(self, x):
@@ -74,7 +83,7 @@ class LinearNode():
 
 
         # update the second derivatives of our params
-        H_yW = H_ya.reshape((-1, m, 1, m, 1)) * self.x.reshape((-1, 1, 1, n, 1)) * self.x.reshape((-1, 1, 1, 1, n))
+        H_yW = H_ya.reshape((-1, m, 1, m, 1)) * self.x.reshape((-1, 1, n, 1, 1)) * self.x.reshape((-1, 1, 1, 1, n))
         self.H_y["W"] = H_yW
         self.H_y["b"] = H_ya
 
