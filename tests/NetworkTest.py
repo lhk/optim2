@@ -4,7 +4,7 @@ import unittest
 from LinearNode import LinearNode
 from TanhNode import TanhNode
 
-class NetworkTest(unittest.TestCase):
+class NetworkTest():
 
     def setUp(self):
         self.tol = 1e-6

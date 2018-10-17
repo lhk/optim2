@@ -2,10 +2,10 @@ import numpy as np
 import unittest
 
 from LinearNode import LinearNode
-from TanhNode import TanhNode
+from SquareNode import SquareNode
 from tests.NetworkTest import NetworkTest
 
-class LinearTanhNetworkTest(NetworkTest, unittest.TestCase):
+class LinearSquareNetworkTest(NetworkTest, unittest.TestCase):
 
     def setUp(self):
         super().setUp()
@@ -23,8 +23,9 @@ class LinearTanhNetworkTest(NetworkTest, unittest.TestCase):
         self.x = np.random.rand(batch_size, 3, 1)
 
         lin1 = LinearNode(W1, b1, batch_size)
-        tan1 = TanhNode(4, batch_size)
+        act1 = SquareNode(4, batch_size)
         lin2 = LinearNode(W2, b2, batch_size)
-        tan2 = TanhNode(1, batch_size)
+        act2 = SquareNode(1, batch_size)
 
-        self.nodes=[lin1, tan1, lin2, tan2]
+        self.nodes=[lin1, act1, lin2, act2]
+
