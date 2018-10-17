@@ -121,10 +121,10 @@ class LinearTanhTest(unittest.TestCase):
                 num_2grad = (loss(a_plus) - 2 * loss(a) + loss(a_minus)) / (self.eps ** 2)
 
                 diff_grad = abs(num_grad[0] - dW1[0, i, j])
-                rel_errror_grad = diff_grad / (abs(num_grad[0]) + abs(dx[0, i, j]))
+                rel_errror_grad = diff_grad / (abs(num_grad[0]) + abs(dW1[0, i, j]))
 
                 diff_2grad = abs(num_2grad[0] - ddW1[0, i, j, i, j])
-                rel_errror_2grad = diff_2grad / (abs(num_2grad[0]) + abs(ddx[0, i, j, i, j]))
+                rel_errror_2grad = diff_2grad / (abs(num_2grad[0]) + abs(ddW1[0, i, j, i, j]))
 
                 self.assertTrue(rel_errror_grad < self.tol)
                 self.assertTrue(rel_errror_2grad < np.sqrt(self.tol))
