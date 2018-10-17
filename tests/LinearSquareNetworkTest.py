@@ -5,6 +5,7 @@ from nodes.LinearNode import LinearNode
 from nodes.SquareNode import SquareNode
 from tests.NetworkTest import NetworkTest
 
+
 class LinearSquareNetworkTest(NetworkTest, unittest.TestCase):
 
     def setUp(self):
@@ -27,5 +28,4 @@ class LinearSquareNetworkTest(NetworkTest, unittest.TestCase):
         lin2 = LinearNode(W2, b2, batch_size)
         act2 = SquareNode(1, batch_size)
 
-        self.nodes=[lin1, act1, lin2, act2]
-
+        self.nodes = [lin1, act1, lin2, act2]

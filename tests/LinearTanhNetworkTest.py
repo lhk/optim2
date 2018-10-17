@@ -5,6 +5,7 @@ from nodes.LinearNode import LinearNode
 from nodes.TanhNode import TanhNode
 from tests.NetworkTest import NetworkTest
 
+
 class LinearTanhNetworkTest(NetworkTest, unittest.TestCase):
 
     def setUp(self):
@@ -27,4 +28,4 @@ class LinearTanhNetworkTest(NetworkTest, unittest.TestCase):
         lin2 = LinearNode(W2, b2, batch_size)
         tan2 = TanhNode(1, batch_size)
 
-        self.nodes=[lin1, tan1, lin2, tan2]
+        self.nodes = [lin1, tan1, lin2, tan2]
