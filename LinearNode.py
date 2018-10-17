@@ -42,7 +42,7 @@ class LinearNode():
 
         # update the first derivatives of our params
         self.J_y["W"] = J_ya.transpose([0,2,1])@ self.x.transpose([0,2,1])
-        self.J_y["b"] = J_ya.T # np.sum(J_ya.T, keepdims=True, axis=1)
+        self.J_y["b"] = J_ya.transpose([0,2,1]) # np.sum(J_ya.T, keepdims=True, axis=1)
 
         self.update_J_ax()
         self.J_yx = J_ya @ self.J_ax
@@ -88,7 +88,9 @@ class LinearNode():
         # update the second derivatives of our params
         H_yW = H_ya.reshape((-1, m, 1, m, 1)) * self.x.reshape((-1, 1, n, 1, 1)) * self.x.reshape((-1, 1, 1, 1, n))
         self.H_y["W"] = H_yW
-        self.H_y["b"] = H_ya
+
+        # b has the shape (4,1), we want the resulting Hessian to be indexed along the axes 2 and 4:
+        self.H_y["b"] = H_ya.reshape((-1, m, 1, m, 1))
 
         return self.H_yx
 

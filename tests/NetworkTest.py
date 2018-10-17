@@ -25,7 +25,7 @@ class NetworkTest(unittest.TestCase):
 
     def backward_pass2(self, ddy_ddout):
         for node in reversed(self.nodes):
-            dy_dout = node.backward_pass2(ddy_ddout)
+            ddy_ddout = node.backward_pass2(ddy_ddout)
         return ddy_ddout
 
     def test_passes(self):
