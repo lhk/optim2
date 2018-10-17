@@ -17,7 +17,7 @@ class LinearTanhTest(unittest.TestCase):
         W2 = np.random.rand(1, 4)
         b2 = np.random.rand(1, 1)
 
-        batch_size = 1
+        batch_size = 5
 
         # first dimension is batch
         self.x = np.random.rand(batch_size, 3, 1)
@@ -62,27 +62,27 @@ class LinearTanhTest(unittest.TestCase):
         ddy_ddx = self.backward_pass2(np.zeros_like(y))
 
     def test_grad_x(self):
-        for idx in range(self.x.shape[0]):
+        for idx in range(self.x.shape[1]):
             mask = np.zeros_like(self.x)
-            mask[idx]=1
+            mask[0, idx, 0]=1
 
             x_plus = self.x + mask * self.eps
             x_minus = self.x - mask * self.eps
 
-            a = self.forward_pass1(self.x)
+            a = self.forward(self.x)
             loss = lambda a: a**2
-            da, dda = 2*a, 2
+            da, dda = 2*a, np.ones_like(a)*2
             dx= self.backward_pass1(da)
             ddx = self.backward_pass2(dda)
 
-            a_plus = self.forward_pass1(x_plus)
-            a_minus = self.forward_pass1(x_minus)
+            a_plus = self.forward(x_plus)
+            a_minus = self.forward(x_minus)
 
             num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
             num_2grad = (loss(a_plus) -2*loss(a) + loss(a_minus)) / (self.eps ** 2)
 
-            self.assertTrue(abs(num_grad - dx[idx])<self.tol)
-            self.assertTrue(abs(num_2grad - ddx[idx]<np.sqrt(self.tol)))
+            self.assertTrue(abs(num_grad[0] - dx[0, 0, idx])<self.tol)
+            self.assertTrue(abs(num_2grad[0] - ddx[0, idx, idx])<np.sqrt(self.tol))
 
     def test_grad_W(self):
         W1 = np.copy(self.lin1.W)
