@@ -1,8 +1,5 @@
 import numpy as np
-import unittest
 
-from LinearNode import LinearNode
-from TanhNode import TanhNode
 
 class NetworkTest():
 

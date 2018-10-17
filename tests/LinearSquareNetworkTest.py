@@ -1,8 +1,8 @@
 import numpy as np
 import unittest
 
-from LinearNode import LinearNode
-from SquareNode import SquareNode
+from nodes.LinearNode import LinearNode
+from nodes.SquareNode import SquareNode
 from tests.NetworkTest import NetworkTest
 
 class LinearSquareNetworkTest(NetworkTest, unittest.TestCase):

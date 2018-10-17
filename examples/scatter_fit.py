@@ -11,9 +11,9 @@ plt.scatter(x[:,0], y[:,0], c=labels)
 plt.show()
 
 # set up the network
-from LinearNode import LinearNode
-from TanhNode import TanhNode
-from SigmoidNode import SigmoidNode
+from nodes.LinearNode import LinearNode
+from nodes.TanhNode import TanhNode
+from nodes.SigmoidNode import SigmoidNode
 
 np.random.seed(0)
 

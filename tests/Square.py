@@ -1,8 +1,7 @@
 import numpy as np
 import unittest
 
-from LinearNode import LinearNode
-from SquareNode import SquareNode
+from nodes.SquareNode import SquareNode
 
 class SquareTest(unittest.TestCase):
 
