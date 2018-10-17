@@ -42,7 +42,7 @@ class LinearNode():
 
         # update the first derivatives of our params
         self.J_y["W"] = J_ya.transpose([0,2,1])@ self.x.transpose([0,2,1])
-        self.J_y["b"] =J_ya # np.sum(J_ya.T, keepdims=True, axis=1)
+        self.J_y["b"] = J_ya.T # np.sum(J_ya.T, keepdims=True, axis=1)
 
         self.update_J_ax()
         self.J_yx = J_ya @ self.J_ax
