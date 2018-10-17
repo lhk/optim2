@@ -7,7 +7,7 @@ np.random.seed(0)
 num_samples = 2000
 x, y, labels = patterns.sides(num_samples)
 
-plt.scatter(x[:,0], y[:,0], c=labels)
+plt.scatter(x[:, 0], y[:, 0], c=labels)
 plt.show()
 
 # set up the network
@@ -37,15 +37,18 @@ nodes.remove(nodes[-1])
 sigm = SigmoidNode()
 nodes.append(sigm)
 
+
 def forward(x):
     for node in nodes:
-        x= node.forward(x)
+        x = node.forward(x)
     return x
+
 
 def backward(dy, ddy):
     for node in reversed(nodes):
         dy, ddy = node.backward(dy, ddy)
     return dy, ddy
+
 
 def sample(batch_size):
     indices = np.random.choice(num_samples, batch_size)
@@ -58,17 +61,19 @@ def sample(batch_size):
 
     return batch, targets
 
+
 def update_firstorder(alpha=1e-3):
     for node in nodes:
         for param_id in node.param_ids:
             # something like a relaxed newton step
-            node.params[param_id][:] = node.params[param_id] - alpha*node.d[param_id]
+            node.params[param_id][:] = node.params[param_id] - alpha * node.d[param_id]
+
 
 def update_secondorder(alpha=1e-4):
     for node in nodes:
         for param_id in node.param_ids:
             # something like a relaxed newton step
-            node.params[param_id][:] = node.params[param_id] - alpha*node.d[param_id]/node.dd[param_id]
+            node.params[param_id][:] = node.params[param_id] - alpha * node.d[param_id] / node.dd[param_id]
 
 
 # start the training process
@@ -82,8 +87,8 @@ for i in range(100000):
     preds = forward(batch)
 
     # compute and derive loss
-    loss = ((preds - targets)**2).mean()
-    dy = 2*(preds - targets)
+    loss = ((preds - targets) ** 2).mean()
+    dy = 2 * (preds - targets)
     ddy = 2
 
     # backward pass
@@ -93,7 +98,6 @@ for i in range(100000):
     update_secondorder()
 
     mean_loss += loss
-    if i%1000==0 and i!=0:
-        print(mean_loss/1000)
-        mean_loss=0
-
+    if i % 1000 == 0 and i != 0:
+        print(mean_loss / 1000)
+        mean_loss = 0

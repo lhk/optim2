@@ -1,9 +1,10 @@
 import numpy as np
 
+
 def circles(num_samples):
     # set up the data
     # circle one
-    half_samples=num_samples//2
+    half_samples = num_samples // 2
     phi = np.linspace(0, np.pi * 5, half_samples)
     r = np.linspace(0, 10, half_samples)
 
@@ -27,11 +28,11 @@ def circles(num_samples):
 
     return x, y, labels
 
-def sides(num_samples):
 
-    half_samples=num_samples//2
-    x1 =np.random.rand(half_samples)*0.7
-    x2 = np.random.rand(half_samples)*0.7 + 0.3
+def sides(num_samples):
+    half_samples = num_samples // 2
+    x1 = np.random.rand(half_samples) * 0.7
+    x2 = np.random.rand(half_samples) * 0.7 + 0.3
     y1 = np.random.rand(half_samples)
     y2 = np.random.rand(half_samples)
 
