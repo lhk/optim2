@@ -40,7 +40,7 @@ class TanhNode:
 
     def backward_pass2(self, H_ya):
 
-        m,n = self.m, self.n
+        m,n = self.n, self.n
         batch_size = self.batch_size
 
         # computing the first part of H_ax
