@@ -55,9 +55,9 @@ class LinearNode():
         # creating two versions of J_ax that can be broadcast together
         # after the broadcast, the indices of a will be the first two axes
         # and the indices of x will be the last two
-        H_ya = H_ya.reshape((batch_size, m, m, 1, 1))
-        J_ax_1 = self.J_ax.reshape((batch_size, m, 1, n, 1))
-        J_ax_2 = self.J_ax.reshape((batch_size, 1, m, 1, n))
+        H_ya = H_ya.reshape((-1, m, m, 1, 1))
+        J_ax_1 = self.J_ax.reshape((-1, m, 1, n, 1))
+        J_ax_2 = self.J_ax.reshape((-1, 1, m, 1, n))
 
         # summing over the first two axes
         I_yx = (H_ya * J_ax_1 * J_ax_2).sum(axis=1).sum(axis=1)
