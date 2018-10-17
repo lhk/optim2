@@ -6,7 +6,7 @@ class Node():
         self.n = n
         self.batch_size = batch_size
 
-    def forward(self, x):
+    def forward(self, *args):
         raise NotImplementedError("this must be overwritten")
 
     def backward_pass1(self, J_ya):
@@ -19,10 +19,10 @@ class Node():
 
         return self.J_yx
 
-    def update_J_ax(self):
+    def update_J_ax(self, *args):
         raise NotImplementedError("this must be overwritten")
 
-    def update_H_ax(self):
+    def update_H_ax(self, *args):
         raise NotImplementedError("this must be overwritten")
 
     def backward_pass2(self, H_ya):
