@@ -5,6 +5,8 @@ class LinearNode():
         self.W = W
         self.b = b
 
+        self.param_ids=["W", "b"]
+
         # x has n entries, a has m entries
         # m is the output dimension, n is the input dimension
         self.m, self.n = self.W.shape
@@ -30,7 +32,7 @@ class LinearNode():
         return self.J_yx
 
     def update_J_ax(self):
-        self.J_ax = self.W.T
+        self.J_ax = self.W
 
     def update_H_ax(self):
         # this is a linear mapping
