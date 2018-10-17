@@ -60,14 +60,14 @@ class LinearNode():
         J_ax_2 = self.J_ax.reshape((batch_size, 1, m, 1, n))
 
         # summing over the first two axes
-        I_yx = (H_ya * J_ax_1 * J_ax_2).sum(axis=0).sum(axis=0)
+        I_yx = (H_ya * J_ax_1 * J_ax_2).sum(axis=1).sum(axis=1)
 
         # computing the Hessian H_ax
         self.update_H_ax()
 
         # computing the second part of H_ax
         J_ya_1 = self.J_ya.reshape((batch_size, m, 1, 1))
-        O_yx = (J_ya_1 * self.H_ax).sum(axis=0)
+        O_yx = (J_ya_1 * self.H_ax).sum(axis=1)
 
         self.H_yx = I_yx + O_yx
         return self.H_yx
