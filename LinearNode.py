@@ -7,6 +7,9 @@ class LinearNode():
         self.batch_size = batch_size
 
         self.param_ids=["W", "b"]
+        self.params={}
+        self.params["W"]=W
+        self.params["b"]=b
 
         # x has n entries, a has m entries
         # m is the output dimension, n is the input dimension

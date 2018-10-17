@@ -94,11 +94,11 @@ class NetworkTest(unittest.TestCase):
                     num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
                     num_2grad = (loss(a_plus) - 2 * loss(a) + loss(a_minus)) / (self.eps ** 2)
 
-                    diff_grad = abs(num_grad[0] - dparam[0, *idx])
-                    rel_errror_grad = diff_grad / (abs(num_grad[0]) + abs(dparam[0, *idx]))
+                    diff_grad = abs(num_grad[0] - dparam[(0, *idx)])
+                    rel_errror_grad = diff_grad / (abs(num_grad[0]) + abs(dparam[(0, *idx)]))
 
-                    diff_2grad = abs(num_2grad[0] - ddparam[0, *idx, *idx])
-                    rel_errror_2grad = diff_2grad / (abs(num_2grad[0]) + abs(ddparam[0, *idx, *idx]))
+                    diff_2grad = abs(num_2grad[0] - ddparam[(0, *idx, *idx)])
+                    rel_errror_2grad = diff_2grad / (abs(num_2grad[0]) + abs(ddparam[(0, *idx, *idx)]))
 
                     self.assertTrue(rel_errror_grad < self.tol)
                     self.assertTrue(rel_errror_2grad < np.sqrt(self.tol))
