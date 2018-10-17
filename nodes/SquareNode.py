@@ -3,7 +3,7 @@ from nodes.Node import Node
 class SquareNode(Node):
     def __init__(self, n, batch_size):
 
-        # sigmoid maps n values to n values
+        # maps n values to n values
         super().__init__(n,n,batch_size)
 
         #no params
