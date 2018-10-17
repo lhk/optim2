@@ -13,6 +13,7 @@ class LinearNode():
         self.m, self.n = self.W.shape
 
         self.J_y = {}
+        self.J_a = {}
         self.H_y = {}
 
     def forward(self, x):
@@ -70,6 +71,13 @@ class LinearNode():
         O_yx = (J_ya_1 * self.H_ax).sum(axis=1)
 
         self.H_yx = I_yx + O_yx
+
+
+        # update the second derivatives of our params
+        H_yW = H_ya.reshape((-1, m, 1, m, 1)) * self.x.reshape((-1, 1, 1, n, 1)) * self.x.reshape((-1, 1, 1, 1, n))
+        self.H_y["W"] = H_yW
+        self.H_y["b"] = H_ya
+
         return self.H_yx
 
 
