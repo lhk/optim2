@@ -17,7 +17,7 @@ class LinearSquareTest(unittest.TestCase):
         W2 = np.random.rand(1, 4)
         b2 = np.random.rand(1, 1)
 
-        batch_size = 5
+        batch_size = 1
 
         # first dimension is batch
         self.x = np.random.rand(batch_size, 3, 1)
@@ -81,8 +81,14 @@ class LinearSquareTest(unittest.TestCase):
             num_grad = (loss(a_plus) - loss(a_minus)) / (2 * self.eps)
             num_2grad = (loss(a_plus) -2*loss(a) + loss(a_minus)) / (self.eps ** 2)
 
-            self.assertTrue(abs(num_grad[0] - dx[0, 0, idx])<self.tol)
-            self.assertTrue(abs(num_2grad[0] - ddx[0, idx, idx])<np.sqrt(self.tol))
+            diff_grad = abs(num_grad[0] - dx[0, 0, idx])
+            rel_errror_grad = diff_grad / (abs(num_grad[0]) + abs(dx[0, 0, idx])) * 2
+
+            diff_2grad = abs(num_2grad[0] - ddx[0, idx, idx])
+            rel_errror_2grad = diff_2grad / (abs(num_2grad[0]) + abs(ddx[0,idx,idx])) * 2
+
+            self.assertTrue(rel_errror_grad<self.tol)
+            self.assertTrue(rel_errror_2grad<np.sqrt(self.tol))
 
     def test_grad_W(self):
         W1 = np.copy(self.lin1.W)
