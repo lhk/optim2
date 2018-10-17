@@ -9,7 +9,6 @@ class TanhNode:
         self.batch_size=batch_size
 
     def forward(self, x):
-        assert x.shape==[self.batch_size, self.n, 1]
 
         self.x = x
         self.a = np.tanh(x)
@@ -17,7 +16,7 @@ class TanhNode:
 
     def backward_pass1(self, J_ya):
         # J_ya is a row vector
-        assert J_ya.shape == [self.batch_size, 1, self.n]
+        assert J_ya.shape == (self.batch_size, 1, self.n)
         self.J_ya = J_ya
 
         self.update_J_ax()

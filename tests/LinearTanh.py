@@ -17,18 +17,21 @@ class LinearTanhTest(unittest.TestCase):
         W2 = np.random.rand(1, 4)
         b2 = np.random.rand(1, 1)
 
-        self.x = np.random.rand(3, 1)
+        batch_size = 1
 
-        self.lin1 = LinearNode(W1, b1)
-        self.tan1 = TanhNode()
-        self.lin2 = LinearNode(W2, b2)
-        self.tan2 = TanhNode()
+        # first dimension is batch
+        self.x = np.random.rand(batch_size, 3, 1)
 
-    def forward_pass1(self, x):
-        z = self.lin1.forward_pass1(x)
-        a = self.tan1.forward_pass1(z)
-        z = self.lin2.forward_pass1(a)
-        a = self.tan2.forward_pass1(z)
+        self.lin1 = LinearNode(W1, b1, batch_size)
+        self.tan1 = TanhNode(4, batch_size)
+        self.lin2 = LinearNode(W2, b2, batch_size)
+        self.tan2 = TanhNode(1, batch_size)
+
+    def forward(self, x):
+        z = self.lin1.forward(x)
+        a = self.tan1.forward(z)
+        z = self.lin2.forward(a)
+        a = self.tan2.forward(z)
         return a
 
     def backward_pass1(self, dy_dout):
@@ -42,18 +45,6 @@ class LinearTanhTest(unittest.TestCase):
 
         return dy_din
 
-    def forward_pass2(self, x):
-        dx_dx = np.ones_like(x)
-        dout_dx = self.lin1.forward_pass2(dx_dx)
-        din_dx = dout_dx
-        dout_dx = self.tan1.forward_pass2(din_dx)
-        din_dx = dout_dx
-        dout_dx = self.lin2.forward_pass2(din_dx)
-        din_dx = dout_dx
-        dout_dx = self.tan2.forward_pass2(din_dx)
-
-        return dout_dx
-
     def backward_pass2(self, ddy_ddout):
         ddy_ddin = self.tan2.backward_pass2(ddy_ddout)
         ddy_ddout = ddy_ddin
@@ -66,7 +57,7 @@ class LinearTanhTest(unittest.TestCase):
         return ddy_ddin
 
     def test_passes(self):
-        y = self.forward_pass1(self.x)
+        y = self.forward(self.x)
         dy_dx = self.backward_pass1(np.ones_like(y))
         ddy_ddx = self.backward_pass2(np.zeros_like(y))
 
