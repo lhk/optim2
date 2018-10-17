@@ -35,7 +35,7 @@ class TanhNode:
         n = self.n
         batch_size = self.batch_size
         self.H_ax = np.zeros((batch_size, n, n, n))
-        self.H_ax[:, np.arange(n), np.arange(self.n), np.arange(self.n)] =  -(2*np.sinh(self.x))/(np.cosh(self.x)**3)
+        self.H_ax[:, np.arange(n), np.arange(self.n), np.arange(self.n)] =  (-(2*np.sinh(self.x))/(np.cosh(self.x)**3)).reshape((batch_size, n))
 
 
     def backward_pass2(self, H_ya):
