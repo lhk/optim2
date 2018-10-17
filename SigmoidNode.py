@@ -1,6 +1,6 @@
 import numpy as np
 
-class TanhNode:
+class SigmoidNode:
     def __init__(self, n, batch_size):
         #no params
         self.param_ids=[]
