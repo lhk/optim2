@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Node():
     def __init__(self, m, n, batch_size):
         self.m = m
@@ -26,8 +27,7 @@ class Node():
         raise NotImplementedError("this must be overwritten")
 
     def backward_pass2(self, H_ya):
-
-        m,n = self.m, self.n
+        m, n = self.m, self.n
         batch_size = self.batch_size
 
         # computing the first part of H_ax
@@ -51,5 +51,3 @@ class Node():
 
         self.H_yx = I_yx + O_yx
         return self.H_yx
-
-

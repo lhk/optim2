@@ -1,16 +1,17 @@
 import numpy as np
 from nodes.Node import Node
 
+
 class LinearNode(Node):
     def __init__(self, W, b, batch_size):
         self.W = W
         self.b = b
         self.batch_size = batch_size
 
-        self.param_ids=["W", "b"]
-        self.params={}
-        self.params["W"]=W
-        self.params["b"]=b
+        self.param_ids = ["W", "b"]
+        self.params = {}
+        self.params["W"] = W
+        self.params["b"] = b
 
         # x has n entries, a has m entries
         # m is the output dimension, n is the input dimension
@@ -32,7 +33,7 @@ class LinearNode(Node):
         self.H_y = {}
 
     def forward(self, x):
-        assert x.shape==(self.batch_size, self.n, 1)
+        assert x.shape == (self.batch_size, self.n, 1)
 
         self.x = x
         self.a = self.W @ x + self.b
@@ -42,8 +43,8 @@ class LinearNode(Node):
         super().backward_pass1(J_ya)
 
         # update the first derivatives of our params
-        self.J_y["W"] = J_ya.transpose([0,2,1])@ self.x.transpose([0,2,1])
-        self.J_y["b"] = J_ya.transpose([0,2,1]) # np.sum(J_ya.T, keepdims=True, axis=1)
+        self.J_y["W"] = J_ya.transpose([0, 2, 1]) @ self.x.transpose([0, 2, 1])
+        self.J_y["b"] = J_ya.transpose([0, 2, 1])  # np.sum(J_ya.T, keepdims=True, axis=1)
 
         return self.J_yx
 
@@ -57,8 +58,7 @@ class LinearNode(Node):
         self.H_ax = np.zeros((1, self.m, self.n, self.n))
 
     def backward_pass2(self, H_ya):
-
-        m,n = self.m, self.n
+        m, n = self.m, self.n
         super().backward_pass2(H_ya)
 
         # update the second derivatives of our params
@@ -69,5 +69,3 @@ class LinearNode(Node):
         self.H_y["b"] = H_ya.reshape((-1, m, 1, m, 1))
 
         return self.H_yx
-
-
